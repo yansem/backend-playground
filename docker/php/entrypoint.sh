@@ -29,6 +29,15 @@ php artisan migrate --force || true
 chmod -R 775 storage bootstrap/cache
 chmod -R 755 public
 
+# Настройка RabbitMQ (добавили)
+#sed -i 's/^QUEUE_CONNECTION=.*/QUEUE_CONNECTION=rabbitmq/' .env
+#
+#sed -i 's/^RABBITMQ_HOST=.*/RABBITMQ_HOST=rabbitmq/' .env 2>/dev/null || echo "RABBITMQ_HOST=rabbitmq" >> .env
+#sed -i 's/^RABBITMQ_PORT=.*/RABBITMQ_PORT=5672/' .env 2>/dev/null || echo "RABBITMQ_PORT=5672" >> .env
+#sed -i 's/^RABBITMQ_USER=.*/RABBITMQ_USER=guest/' .env 2>/dev/null || echo "RABBITMQ_USER=guest" >> .env
+#sed -i 's/^RABBITMQ_PASSWORD=.*/RABBITMQ_PASSWORD=guest/' .env 2>/dev/null || echo "RABBITMQ_PASSWORD=guest" >> .env
+#sed -i 's/^RABBITMQ_VHOST=.*/RABBITMQ_VHOST=\//' .env 2>/dev/null || echo "RABBITMQ_VHOST=/" >> .env
+
 echo "✅ Laravel запущен (самая простая версия)"
 
 exec "$@"

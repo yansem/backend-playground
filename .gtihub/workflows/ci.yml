@@ -5,6 +5,7 @@ on:
     branches: [ master, cicd ]
   pull_request:
     branches: [ master ]
+  workflow_dispatch:
 
 jobs:
   test:

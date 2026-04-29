@@ -19,12 +19,13 @@ class ProductFactory extends Factory
     {
         $brands = ['Logitech', 'Apple', 'Dell', 'Samsung', 'Lenovo', 'Razer', 'HP'];
 
-        $categoriesMap = [
-            'laptop' => ['laptop', 'notebook', 'ultrabook'],
-            'mouse' => ['mouse', 'pointer'],
-            'keyboard' => ['keyboard', 'keypad'],
-            'monitor' => ['monitor', 'display', 'screen'],
-            'headset' => ['headset', 'headphones'],
+        // канонические категории
+        $categories = [
+            'laptops' => ['laptop', 'notebook', 'ultrabook'],
+            'mice' => ['mouse', 'pointer'],
+            'keyboards' => ['keyboard', 'keypad'],
+            'monitors' => ['monitor', 'display', 'screen'],
+            'headsets' => ['headset', 'headphones'],
         ];
 
         $adjectives = [
@@ -46,18 +47,21 @@ class ProductFactory extends Factory
 
         $brand = fake()->randomElement($brands);
 
-        $baseCategory = fake()->randomElement(array_keys($categoriesMap));
-        $category = fake()->randomElement($categoriesMap[$baseCategory]);
+        // ключ = нормализованная категория
+        $categorySlug = fake()->randomElement(array_keys($categories));
 
-        // иногда добавляем второй конфликтующий смысл
+        // синоним для текста
+        $categoryWord = fake()->randomElement($categories[$categorySlug]);
+
+        // иногда добавляем второй шумный смысл
         $secondaryCategory = fake()->optional(0.3)->randomElement(
-            $categoriesMap[fake()->randomElement(array_keys($categoriesMap))]
+            $categories[fake()->randomElement(array_keys($categories))]
         );
 
         $titleParts = array_filter([
             $typo($brand),
             fake()->optional(0.7)->randomElement($adjectives),
-            $typo($category),
+            $typo($categoryWord),
             $secondaryCategory,
             fake()->optional(0.5)->randomElement($noiseWords),
             fake()->optional(0.3)->words(2, true),
@@ -65,20 +69,17 @@ class ProductFactory extends Factory
 
         $descriptionParts = [
             $brand,
-            $category,
+            $categoryWord,
             fake()->randomElement($adjectives),
 
-            // длинные тексты
             fake()->paragraph(),
             fake()->paragraph(),
 
-            // немного мусора
             fake()->optional(0.5)->words(10, true),
 
-            // добавим альтернативные формулировки
-            fake()->optional(0.5)->randomElement($categoriesMap[$baseCategory]),
+            // добавляем синонимы в текст
+            fake()->optional(0.5)->randomElement($categories[$categorySlug]),
 
-            // случайное предложение
             fake()->sentence(),
         ];
 
@@ -86,6 +87,10 @@ class ProductFactory extends Factory
             'title' => implode(' ', $titleParts),
             'description' => implode(' ', $descriptionParts),
             'price' => fake()->randomFloat(2, 10, 3000),
+
+            // ключевые поля для фильтрации
+            'category' => ucfirst($categorySlug), // "Laptops"
+            'category_slug' => $categorySlug,     // "laptops"
         ];
     }
 }

@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description')->nullable();
+            $table->string('category');
+            // опционально для UI/иерархий
+            $table->string('category_slug')->index();
             $table->decimal('price', 10, 2);
             $table->timestamps();
         });

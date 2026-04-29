@@ -92,6 +92,12 @@ class ElasticsearchTestCommand extends Command
                         'price' => [
                             'type' => 'float'
                         ],
+                        'category' => [
+                            'type' => 'keyword'
+                        ],
+                        'category_slug' => [
+                            'type' => 'keyword'
+                        ],
                     ]
                 ]
             ]
@@ -114,8 +120,10 @@ class ElasticsearchTestCommand extends Command
 
                 $params['body'][] = [
                     'title' => $product->title,
-                    'description' => $product->description,
-                    'price' => $product->price,
+                    'description' => $product->description ?? '',
+                    'price' => (float) $product->price,
+                    'category' => $product->category,
+                    'category_slug' => $product->category_slug,
                 ];
             }
 
